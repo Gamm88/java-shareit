@@ -14,7 +14,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Booking {
+public class BookingDto {
     @NotBlank
     private long id; // ид бронирования
     @NotBlank

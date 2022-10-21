@@ -13,11 +13,9 @@ import javax.validation.constraints.Size;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+public class ItemDto {
     @NotNull
     private long id; // ид вещи
-    @NotNull
-    private long ownerId; // ид владельца вещи
     @NotBlank(message = "Название не может быть пустым")
     @Size(max = 100, message = "Максимальная длина названия — 100 символов")
     private String name; // название
@@ -27,3 +25,4 @@ public class Item {
     @NotNull(message = "Статус доступности аренды должен быть указан")
     private Boolean available; // доступность вещи для аренды, проставлять владелец, по умолчанию true.
 }
+
