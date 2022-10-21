@@ -26,9 +26,9 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
-        ValidError ValidError = new ValidError("Введены некорректные параметры объекта", errors);
-        log.info("ValidationHandler исключение - " + ValidError);
-        return new ResponseEntity<>(ValidError, status);
+        ValidError validError = new ValidError("Введены некорректные параметры объекта", errors);
+        log.info("ValidationHandler исключение - " + validError);
+        return new ResponseEntity<>(validError, status);
     }
 
     @Data
