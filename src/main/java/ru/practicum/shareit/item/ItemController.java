@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.item.model.ItemDto;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 
 import java.util.Collection;
+import java.util.List;
 import javax.validation.Valid;
 
 /**
@@ -17,7 +19,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
-    private final ItemService itemService;
+    private final ItemServiceImpl itemService;
 
     // создать вещь
     @PostMapping
@@ -54,13 +56,6 @@ public class ItemController {
         return itemService.updateItem(userId, itemId, itemDto);
     }
 
-    // удалить все вещи
-    @DeleteMapping
-    public void deleteAllItems() {
-        log.info("ItemController - удаление всех вещей");
-        itemService.deleteAllItems();
-    }
-
     // удалить вещь по ИД
     @DeleteMapping("/{itemId}")
     public void deleteItemById(@PathVariable("itemId") Long itemId) {
@@ -70,8 +65,8 @@ public class ItemController {
 
     // поиск вещей через совпадения текста запроса с наименованием или описанием вещи
     @GetMapping("/search")
-    public Collection<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                           @RequestParam String text) {
+    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                     @RequestParam String text) {
         log.info("ItemController - пользователь с ИД: {} , запросил поиск: [{}]", userId, text);
 
         return itemService.searchItems(text);

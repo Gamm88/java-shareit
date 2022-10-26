@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.user.model.UserDto;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.user.servise.UserServiceImpl;
 
 import java.util.Collection;
 import javax.validation.Valid;
@@ -13,7 +14,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     // создать пользователя
     @PostMapping
@@ -46,13 +47,6 @@ public class UserController {
         log.info("UserController - обновление пользователя с ИД: {}, новое значение: {}", userId, userDto);
 
         return userService.updateUser(userId, userDto);
-    }
-
-    // удалить всех пользователей
-    @DeleteMapping
-    public void deleteAllUsers() {
-        log.info("UserController - удаление всех пользователей");
-        userService.deleteAllUsers();
     }
 
     // удалить пользователя по ИД

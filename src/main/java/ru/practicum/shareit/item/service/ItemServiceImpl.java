@@ -1,9 +1,10 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.service;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
+import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.servise.UserServiceImpl;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.model.ItemMapper;
@@ -11,14 +12,15 @@ import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ItemService {
+public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     // создать вещь
     public ItemDto createItem(Long userId, ItemDto itemDto) {
@@ -77,12 +79,6 @@ public class ItemService {
         return ItemMapper.toItemDto(updatedItem);
     }
 
-    // удалить все вещи
-    public void deleteAllItems() {
-        log.info("ItemService - удаление всех пользователей");
-        itemRepository.deleteAllItems();
-    }
-
     // удалить вещь по ИД
     public void deleteItemById(Long itemId) {
         getItemOrNotFound(itemId);
@@ -91,8 +87,8 @@ public class ItemService {
     }
 
     // поиск вещей через совпадения текста запроса с наименованием или описанием вещи
-    public Collection<ItemDto> searchItems(String text) {
-        Collection<ItemDto> itemsDtoList = new ArrayList<>();
+    public List<ItemDto> searchItems(String text) {
+        List<ItemDto> itemsDtoList = new ArrayList<>();
         if (text.equals("")) {
             log.info("ItemService - запрос не содержит значений");
 

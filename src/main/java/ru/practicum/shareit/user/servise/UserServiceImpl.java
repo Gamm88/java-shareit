@@ -1,7 +1,8 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.servise;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.model.UserDto;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     // создать пользователя
@@ -65,12 +66,6 @@ public class UserService {
         log.info("UserService - в базе обновлён пользователь: {}", updatedUser);
 
         return UserMapper.toUserDto(updatedUser);
-    }
-
-    // удалить всех пользователей
-    public void deleteAllUsers() {
-        log.info("UserService - удаление всех пользователей");
-        userRepository.deleteAllUsers();
     }
 
     // удалить пользователя по ИД

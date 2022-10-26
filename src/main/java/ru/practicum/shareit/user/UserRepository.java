@@ -37,11 +37,6 @@ public class UserRepository {
         return users.get(user.getId());
     }
 
-    // удалить всех пользователей
-    public void deleteAllUsers() {
-        users.clear();
-    }
-
     // удалить пользователя по ИД
     public void deleteUserById(Long userId) {
         users.remove(userId);

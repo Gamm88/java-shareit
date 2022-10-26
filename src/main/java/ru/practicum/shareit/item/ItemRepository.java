@@ -37,11 +37,6 @@ public class ItemRepository {
         return items.get(item.getId());
     }
 
-    // удалить все вещи
-    public void deleteAllItems() {
-        items.clear();
-    }
-
     // удалить вещь по ИД
     public void deleteItemById(Long itemId) {
         items.remove(itemId);
