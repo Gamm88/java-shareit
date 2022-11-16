@@ -2,18 +2,17 @@ package ru.practicum.shareit.item.service;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
-import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.servise.UserServiceImpl;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.model.ItemDto;
+import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.ItemMapper;
+import ru.practicum.shareit.user.servise.UserServiceImpl;
 import ru.practicum.shareit.exception.NotFoundException;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,29 +22,26 @@ public class ItemServiceImpl implements ItemService {
     private final UserServiceImpl userService;
 
     // создать вещь
-    public ItemDto createItem(Long userId, ItemDto itemDto) {
+    public ItemDto addItem(Long userId, ItemDto itemDto) {
         userService.getUserOrNotFound(userId);
-        Item createdItem = itemRepository.createItem(ItemMapper.toItem(userId, itemDto));
-        log.info("ItemService - в базу добавлена вещь: {} ", createdItem);
+        Item newItem = itemRepository.save(ItemMapper.mapToItem(itemDto, userId));
+        log.info("ItemService - в базу добавлена вещь: {} ", newItem);
 
-        return ItemMapper.toItemDto(createdItem);
+        return ItemMapper.mapToItemDto(newItem);
     }
 
     // получить все вещи пользователя по ИД пользователя
-    public Collection<ItemDto> getAllItems(Long userId) {
-        Collection<ItemDto> itemsDtoList = itemRepository.getAllItems().stream()
-                .filter(Item -> Item.getOwnerId() == userId)
-                .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
+    public Collection<ItemDto> getItems(Long userId) {
+        Collection<ItemDto> itemsDtoList = ItemMapper.mapToItemDto(itemRepository.findAllByOwnerId(userId));
         log.info("ItemService - для пользователя с ИД: {} предоставлен список вещей: {} ", userId, itemsDtoList);
 
         return itemsDtoList;
     }
 
     // получить вещь по ИД
-    public ItemDto getItemById(Long itemId) {
+    public ItemDto getItem(Long itemId) {
         Item getItem = getItemOrNotFound(itemId);
-        ItemDto itemDto = ItemMapper.toItemDto(getItem);
+        ItemDto itemDto = ItemMapper.mapToItemDto(getItem);
         log.info("ItemService - по ИД: {} получена вещь: {}", itemId, itemDto);
 
         return itemDto;
@@ -73,17 +69,17 @@ public class ItemServiceImpl implements ItemService {
             updatedItem.setAvailable(newAvailable);
         }
 
-        updatedItem = itemRepository.updateItem(updatedItem);
+        updatedItem = itemRepository.save(updatedItem);
         log.info("ItemService - в базе обновлена вещь: {}", updatedItem);
 
-        return ItemMapper.toItemDto(updatedItem);
+        return ItemMapper.mapToItemDto(updatedItem);
     }
 
     // удалить вещь по ИД
-    public void deleteItemById(Long itemId) {
+    public void deleteItem(Long itemId) {
         getItemOrNotFound(itemId);
         log.info("ItemController - удаление пользователя по ИД: {}", itemId);
-        itemRepository.deleteItemById(itemId);
+        itemRepository.deleteById(itemId);
     }
 
     // поиск вещей через совпадения текста запроса с наименованием или описанием вещи
@@ -94,12 +90,7 @@ public class ItemServiceImpl implements ItemService {
 
             return itemsDtoList;
         }
-        itemsDtoList = itemRepository.getAllItems().stream()
-                .filter(Item::getAvailable)
-                .filter(Item -> Item.getName().toLowerCase().contains(text.toLowerCase())
-                        || Item.getDescription().toLowerCase().contains(text.toLowerCase()))
-                .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
+        itemsDtoList = ItemMapper.mapToItemDto(itemRepository.searchByText(text));
         log.info("ItemService - по запросу: {} предоставлен список вещей: {} ", text, itemsDtoList);
 
         return itemsDtoList;
@@ -107,11 +98,8 @@ public class ItemServiceImpl implements ItemService {
 
     // получение вещи, если не найдена - ошибка 404
     public Item getItemOrNotFound(Long itemId) {
-        Item item = itemRepository.getItemById(itemId);
-        if (item == null) {
-            throw new NotFoundException("Вещь с ИД: " + itemId + " не найден.");
-        }
-
-        return item;
+        return itemRepository
+                .findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Вещь с ИД " + itemId + " не найден."));
     }
 }

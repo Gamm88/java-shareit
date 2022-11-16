@@ -7,19 +7,19 @@ import java.util.Collection;
 
 public interface UserService {
     // создать пользователя
-    UserDto createUser(UserDto userDto);
+    UserDto addUser(UserDto userDto);
 
     // получить всех пользователей
-    Collection<UserDto> getAllUsers();
+    Collection<UserDto> getUsers();
 
     // получить пользователя по ИД
-    UserDto getUserById(Long userId);
+    UserDto getUser(Long userId);
 
     // обновление пользователя
     UserDto updateUser(Long userId, UserDto userDto);
 
     // удалить пользователя по ИД
-    void deleteUserById(Long userId);
+    void deleteUser(Long userId);
 
     // получение пользователя, если не найден - ошибка 404
     User getUserOrNotFound(Long userId);

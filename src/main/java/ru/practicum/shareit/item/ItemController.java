@@ -13,7 +13,6 @@ import javax.validation.Valid;
 /**
  * TODO разобраться как перехватить ошибку если @RequestHeader не заполнен или отсутствует.
  */
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class ItemController {
                               @Valid @RequestBody ItemDto itemDto) {
         log.info("ItemController - создание вещи: {}", itemDto);
 
-        return itemService.createItem(userId, itemDto);
+        return itemService.addItem(userId, itemDto);
     }
 
     // получить все вещи пользователя по ИД пользователя
@@ -35,7 +34,7 @@ public class ItemController {
     public Collection<ItemDto> findAllItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("ItemController - получение всех пользователей");
 
-        return itemService.getAllItems(userId);
+        return itemService.getItems(userId);
     }
 
     // получить вещь по ИД
@@ -43,7 +42,7 @@ public class ItemController {
     public ItemDto getItemById(@PathVariable Long itemId) {
         log.info("ItemController - получение вещи по ИД: {}", itemId);
 
-        return itemService.getItemById(itemId);
+        return itemService.getItem(itemId);
     }
 
     // обновление вещи по ИД
@@ -60,12 +59,12 @@ public class ItemController {
     @DeleteMapping("/{itemId}")
     public void deleteItemById(@PathVariable("itemId") Long itemId) {
         log.info("ItemController - удаление вещи по ИД: {}", itemId);
-        itemService.deleteItemById(itemId);
+        itemService.deleteItem(itemId);
     }
 
     // поиск вещей через совпадения текста запроса с наименованием или описанием вещи
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<ItemDto> searchByText(@RequestHeader("X-Sharer-User-Id") Long userId,
                                      @RequestParam String text) {
         log.info("ItemController - пользователь с ИД: {} , запросил поиск: [{}]", userId, text);
 

@@ -1,44 +1,18 @@
 package ru.practicum.shareit.item;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.item.model.Item;
-import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.List;
 
-@Repository
-public class ItemRepository {
-    private long id = 0; // уникальный ID вещи
-    private final Map<Long, Item> items = new HashMap<>(); // хранение вещей
+public interface ItemRepository extends JpaRepository<Item, Long> {
+    @Query(value = "" +
+            "SELECT i from Item i " +
+            "where (LOWER(i.name)    like CONCAT('%',LOWER(?1),'%') " +
+            "OR LOWER(i.description) like CONCAT('%',LOWER(?1),'%'))" +
+            "AND i.available = true")
+    List<Item> searchByText(String text);
 
-    // создать вещь
-    public Item createItem(Item item) {
-        item.setId(++id);
-        items.put(item.getId(), item);
-
-        return item;
-    }
-
-    // получить все вещи
-    public Collection<Item> getAllItems() {
-
-        return items.values();
-    }
-
-    // получить вещь по ИД
-    public Item getItemById(Long itemId) {
-
-        return items.get(itemId);
-    }
-
-    // обновление вещи по ИД
-    public Item updateItem(Item item) {
-        items.put(item.getId(), item);
-
-        return items.get(item.getId());
-    }
-
-    // удалить вещь по ИД
-    public void deleteItemById(Long itemId) {
-        items.remove(itemId);
-    }
+    List<Item> findAllByOwnerId(Long userId);
 }
