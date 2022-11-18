@@ -28,6 +28,7 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.toList());
         ValidError validError = new ValidError("Введены некорректные параметры объекта", errors);
         log.info("ValidationHandler исключение - " + validError);
+
         return new ResponseEntity<>(validError, status);
     }
 

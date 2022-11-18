@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item.model.item;
 
 import lombok.*;
 
@@ -19,7 +19,7 @@ public class Item {
     private Long id; // ид вещи
 
     @Column(name = "owner_id")
-    private Long ownerId; // ид владельца вещи
+    private Long owner; // ид владельца вещи
 
     @Column
     private String name; // название вещи

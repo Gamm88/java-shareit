@@ -1,11 +1,11 @@
 package ru.practicum.shareit.booking.model;
 
 import lombok.*;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.item.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -16,17 +16,37 @@ import java.util.Date;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id; // ид бронирования
+    private Long id; // ид бронирования
     @Column(name = "start_date")
-    private Date startDate; // дата начала аренды
+    private LocalDateTime start; // дата начала аренды
     @Column(name = "end_date")
-    private Date endDate; // дата окончания аренды
-    @Enumerated(EnumType.STRING)
-    private Status status; // статус подтверждения аренды
+    private LocalDateTime  end; // дата окончания аренды
     @ManyToOne
     @JoinColumn(name = "item_id", referencedColumnName = "id")
     private Item item; // арендуемая вещь
     @ManyToOne
     @JoinColumn(name = "booker_id", referencedColumnName = "id")
     private User booker; // пользователь арендующий вещь
+    @Enumerated(EnumType.STRING)
+    private Status status; // статус подтверждения аренды
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Booking)) return false;
+        return id != null && id.equals(((Booking) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    public Booking(LocalDateTime  start, LocalDateTime  end, Item item, User booker) {
+        this.start = start;
+        this.end = end;
+        this.status = Status.WAITING;
+        this.item = item;
+        this.booker = booker;
+    }
 }

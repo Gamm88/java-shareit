@@ -1,10 +1,9 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item.model.item;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemMapper {
-
     //из ItemDto в Item
     public static Item mapToItem(ItemDto itemDto, long userId) {
         return new Item(
@@ -21,7 +20,10 @@ public class ItemMapper {
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.getAvailable());
+                item.getAvailable(),
+                null,
+                null,
+                null);
     }
 
     //получение списка ItemDto из списка Item

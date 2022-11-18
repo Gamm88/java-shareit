@@ -15,6 +15,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
         log.info("ErrorHandler исключение - " + e.getMessage());
+
         return new ErrorResponse(e.getMessage());
     }
 
@@ -22,6 +23,15 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleDuplicateException(final DuplicateException e) {
         log.info("ErrorHandler исключение - " + e.getMessage());
+
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidatorException(final ValidatorExceptions e) {
+        log.info("ErrorHandler исключение - " + e.getMessage());
+
         return new ErrorResponse(e.getMessage());
     }
 

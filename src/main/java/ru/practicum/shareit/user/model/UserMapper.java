@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserMapper {
-
     //из UserDto в User
     public static User mapToUser(UserDto userDto) {
         return User.builder()
