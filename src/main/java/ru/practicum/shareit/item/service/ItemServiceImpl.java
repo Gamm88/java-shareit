@@ -44,7 +44,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     /**
-     * TODO разобраться, возможен ли рефакторинг для более понятного кода
+     * TODO разобраться, возможен ли рефакторинг для более понятного кода1
      */
     // получить все вещи пользователя по ИД пользователя
     public Collection<ItemDto> getItems(Long userId) {
@@ -71,7 +71,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     /**
-     * TODO разобраться, возможен ли рефакторинг для более понятного кода
+     * TODO разобраться, возможен ли рефакторинг для более понятного кода1
      */
     // получить вещь по ИД и пользователю
     public ItemDto getItemByItemIdAndUserId(Long itemId, Long userId) {
