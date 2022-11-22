@@ -3,18 +3,18 @@ package ru.practicum.shareit.booking.service;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.booking.model.*;
-import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.model.item.Item;
-import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.exception.ValidatorExceptions;
-import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.servise.UserService;
+import org.springframework.stereotype.Service;
+import ru.practicum.shareit.item.model.item.Item;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidatorExceptions;
+import ru.practicum.shareit.user.servise.UserServiceImpl;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,10 +22,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
-    private final UserService userService;
-    private final ItemService itemService;
+    private final UserServiceImpl userService;
+    private final ItemServiceImpl itemService;
 
     // создать бронирование
+    @Override
     public BookingDto addBooking(Long userId, BookingDto bookingDto) {
         Item item = itemService.getItemOrNotFound(bookingDto.getItemId());
         User user = userService.getUserOrNotFound(userId);
@@ -33,7 +34,7 @@ public class BookingServiceImpl implements BookingService {
         if (!item.getAvailable()) {
             throw new ValidatorExceptions("Вещь недоступна для аренды");
         }
-        if (userId == item.getOwner()) {
+        if (userId.equals(item.getOwner())) {
             throw new NotFoundException("Владелец вещи не может бронировать свою вещь");
         }
         if (bookingDto.getEnd().isBefore(bookingDto.getStart())) {
@@ -43,6 +44,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = BookingMapper.mapToBooking(bookingDto);
         booking.setBooker(user);
         booking.setItem(item);
+        booking.setStatus(Status.WAITING);
 
         bookingRepository.save(booking);
         log.info("BookingService - в базу добавлена аренда: {} ", booking);
@@ -51,6 +53,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     // подтверждение или отклонение запроса на бронирование, может быть выполнено только владельцем вещи
+    @Override
     public BookingDto setApprove(Long bookingId, Long userId, Boolean approved) {
         Booking booking = getBookingOrNotFound(bookingId);
         if (booking.getStatus().equals(Status.APPROVED)) {
@@ -58,7 +61,7 @@ public class BookingServiceImpl implements BookingService {
         }
         User user = userService.getUserOrNotFound(userId);
 
-        if (booking.getItem().getOwner() != user.getId()) {
+        if (!booking.getItem().getOwner().equals(user.getId())) {
             throw new NotFoundException("Пользователь не является владельцем вещи, в изменении статуса отказано");
         }
         if (approved) {
@@ -74,11 +77,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     // получение данных о конкретном бронировании для автора бронирования, либо владельца вещи
+    @Override
     public BookingDto findByBookingIdAndUserId(Long bookingId, Long userId) {
         Booking booking = getBookingOrNotFound(bookingId);
         userService.getUserOrNotFound(userId);
 
-        if (booking.getBooker().getId() == userId || booking.getItem().getOwner() == userId) {
+        if (booking.getBooker().getId().equals(userId) || booking.getItem().getOwner().equals(userId)) {
             return BookingMapper.mapToBookingDto(booking);
         } else {
             throw new NotFoundException("В доступе отказано, пользователь не имеет отношения к бронированию");
@@ -86,16 +90,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     // получение списка бронирований для пользователя, по статусу
+    @Override
     public Collection<BookingDto> findBookingsByUserIdAndState(Long userId, String state) {
         userService.getUserOrNotFound(userId);
+        State enumState = State.getStateOrValidatorExceptions(state);
 
-        try {
-            Enum.valueOf(State.class, state);
-        } catch (IllegalArgumentException e) {
-            throw new ValidatorExceptions("Unknown state: UNSUPPORTED_STATUS");
-        }
-
-        switch (State.valueOf(state)) {
+        switch (enumState) {
             case ALL:
                 return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId).stream()
                         .map(BookingMapper::mapToBookingDto)
@@ -126,16 +126,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     // получение списка бронирований владельца вещи, по статусу
+    @Override
     public Collection<BookingDto> findBookingsByOwnerIdAndState(Long ownerId, String state) {
         userService.getUserOrNotFound(ownerId);
+        State enumState = State.getStateOrValidatorExceptions(state);
 
-        try {
-            Enum.valueOf(State.class, state);
-        } catch (IllegalArgumentException e) {
-            throw new ValidatorExceptions("Unknown state: UNSUPPORTED_STATUS");
-        }
-
-        switch (State.valueOf(state)) {
+        switch (enumState) {
             case ALL:
                 return bookingRepository.findAllByItem_OwnerOrderByStartDesc(ownerId).stream()
                         .map(BookingMapper::mapToBookingDto)
@@ -166,9 +162,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     // получение аренды, если не найдена - ошибка 404
+    @Override
     public Booking getBookingOrNotFound(Long bookingId) {
         return bookingRepository
                 .findById(bookingId)
-                .orElseThrow(() -> new NotFoundException("Вещь с ИД " + bookingId + " не найден."));
+                .orElseThrow(() -> new NotFoundException("Аренда с ИД " + bookingId + " не найден."));
     }
 }

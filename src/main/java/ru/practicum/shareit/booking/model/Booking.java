@@ -7,9 +7,11 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
+@Getter
+@Setter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "bookings")
@@ -40,13 +42,5 @@ public class Booking {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    public Booking(LocalDateTime  start, LocalDateTime  end, Item item, User booker) {
-        this.start = start;
-        this.end = end;
-        this.status = Status.WAITING;
-        this.item = item;
-        this.booker = booker;
     }
 }

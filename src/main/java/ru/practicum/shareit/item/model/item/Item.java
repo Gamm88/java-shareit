@@ -7,9 +7,11 @@ import javax.persistence.*;
 /**
  * Модель вещи которая может быть арендована
  */
-@Data
 @Entity
+@Getter
+@Setter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "items")

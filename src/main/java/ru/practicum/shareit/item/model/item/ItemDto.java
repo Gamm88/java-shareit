@@ -3,9 +3,8 @@ package ru.practicum.shareit.item.model.item;
 import lombok.*;
 import ru.practicum.shareit.item.model.comment.CommentDto;
 
-import javax.validation.constraints.*;
-import java.time.LocalDateTime;
 import java.util.List;
+import javax.validation.constraints.*;
 
 @Data
 @Builder
@@ -36,17 +35,4 @@ public class ItemDto {
         private final Long id;
         private final Long bookerId;
     }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ItemComments {
-        private Long id;
-        private String text;
-        private Long itemId;
-        private Long authorId;
-        private String authorName;
-        private LocalDateTime created;
-    }
 }
-

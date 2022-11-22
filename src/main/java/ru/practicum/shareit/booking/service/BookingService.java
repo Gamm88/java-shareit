@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingDto;
 
 import java.util.Collection;
@@ -19,4 +20,7 @@ public interface BookingService {
 
     // получение списка бронирований владельца вещи, по статусу
     Collection<BookingDto> findBookingsByOwnerIdAndState(Long ownerId, String state);
+
+    // получение аренды, если не найдена - ошибка 404
+    Booking getBookingOrNotFound(Long bookingId);
 }

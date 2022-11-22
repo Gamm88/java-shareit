@@ -50,7 +50,7 @@ public class BookingController {
     public Collection<BookingDto> findBookingsByUserIdAndState(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                                @RequestParam(required = false, defaultValue = "ALL")
                                                                String state) {
-        log.info("Получен запрос на поиск брони по владельцу: " + userId + " в статусе: " + state);
+        log.info("Получен запрос на поиск брони по владельцу с ИД: " + userId + " и статусом: " + state);
 
         return bookingService.findBookingsByUserIdAndState(userId, state);
     }

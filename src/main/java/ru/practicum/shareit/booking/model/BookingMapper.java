@@ -4,6 +4,18 @@ import ru.practicum.shareit.item.model.item.Item;
 import ru.practicum.shareit.user.model.User;
 
 public class BookingMapper {
+    //из BookingDto в booking
+    public static Booking mapToBooking(BookingDto bookingDto) {
+        return new Booking(
+                bookingDto.getId(),
+                bookingDto.getStart(),
+                bookingDto.getEnd(),
+                new Item(0L, 0L, null, null, null),
+                new User(),
+                bookingDto.getStatus());
+    }
+
+    //из booking в BookingDto
     public static BookingDto mapToBookingDto(Booking booking) {
         return new BookingDto(
                 booking.getId(),
@@ -18,13 +30,5 @@ public class BookingMapper {
                         booking.getBooker().getId()
                 ),
                 booking.getStatus());
-    }
-
-    public static Booking mapToBooking(BookingDto bookingDto) {
-        return new Booking(
-                bookingDto.getStart(),
-                bookingDto.getEnd(),
-                new Item(0L, 0L, null, null, null),
-                new User());
     }
 }

@@ -7,9 +7,11 @@ import javax.persistence.*;
 /**
  * Модель пользователя
  */
-@Data
 @Entity
+@Getter
+@Setter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")

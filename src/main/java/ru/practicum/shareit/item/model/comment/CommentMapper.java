@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.model.comment;
 
-import ru.practicum.shareit.item.model.item.ItemDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.item.model.item.Item;
 
@@ -8,16 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommentMapper {
-
-    public static CommentDto mapToCommentDto(Comment comment) {
-        return CommentDto.builder()
-                .id(comment.getId())
-                .text(comment.getText())
-                .authorName(comment.getAuthor().getName())
-                .created(comment.getCreated())
-                .build();
-    }
-
+    //из CommentDto в Comment
     public static Comment mapToComment(CommentDto commentDto, Item item, User author) {
         return Comment.builder()
                 .id(commentDto.getId())
@@ -25,6 +15,15 @@ public class CommentMapper {
                 .item(item)
                 .author(author)
                 .created(commentDto.getCreated())
+                .build();
+    }
+    //из Comment в CommentDto
+    public static CommentDto mapToCommentDto(Comment comment) {
+        return CommentDto.builder()
+                .id(comment.getId())
+                .text(comment.getText())
+                .authorName(comment.getAuthor().getName())
+                .created(comment.getCreated())
                 .build();
     }
 

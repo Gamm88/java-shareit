@@ -18,6 +18,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     // создать пользователя
+    @Override
     public UserDto addUser(UserDto userDto) {
         User createdUser = userRepository.save(UserMapper.mapToUser(userDto));
         log.info("UserService - в базу добавлен пользователь: {} ", createdUser);
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // получить всех пользователей
+    @Override
     public Collection<UserDto> getUsers() {
         Collection<UserDto> usersDtoList = UserMapper.mapToUserDto(userRepository.findAll());
         log.info("UserService - предоставлен список пользователей: {} ", usersDtoList);
@@ -34,6 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // получить пользователя по ИД
+    @Override
     public UserDto getUser(Long userId) {
         User getUser = getUserOrNotFound(userId);
         UserDto userDto = UserMapper.mapToUserDto(getUser);
@@ -43,6 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // обновление пользователя
+    @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
         User updatedUser = getUserOrNotFound(userId);
 
@@ -63,6 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // удалить пользователя по ИД
+    @Override
     public void deleteUser(Long userId) {
         getUserOrNotFound(userId);
         log.info("UserController - удаление пользователя по ИД: {}", userId);
@@ -70,6 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // получение пользователя, если не найден - ошибка 404
+    @Override
     public User getUserOrNotFound(Long userId) {
         return userRepository
                 .findById(userId)

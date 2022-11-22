@@ -33,7 +33,7 @@ public class ItemController {
     // получить все вещи пользователя по ИД пользователя
     @GetMapping
     public Collection<ItemDto> findAllItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("ItemController - получение всех пользователей");
+        log.info("ItemController - получение всех вещей пользователя с ИД: {}", userId);
 
         return itemService.getItems(userId);
     }
@@ -75,7 +75,7 @@ public class ItemController {
 
     // добавление комментария к завершённой аренде
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader("X-Sharer-User-id") Long userId,
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
                                  @PathVariable Long itemId,
                                  @Valid @RequestBody CommentDto commentDto) {
         log.info("ItemController - добавление комментария: {}, от пользователь с ИД: {}", commentDto, userId);

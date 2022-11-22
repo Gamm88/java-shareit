@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ItemMapper {
     //из ItemDto в Item
-    public static Item mapToItem(ItemDto itemDto, long userId) {
+    public static Item mapToItem(ItemDto itemDto, Long userId) {
         return new Item(
                 itemDto.getId(),
                 userId,
