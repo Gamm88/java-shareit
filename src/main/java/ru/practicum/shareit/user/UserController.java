@@ -21,7 +21,7 @@ public class UserController {
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {
         log.info("UserController - создание пользователя: {}", userDto);
 
-        return userService.createUser(userDto);
+        return userService.addUser(userDto);
     }
 
     // получить всех пользователей
@@ -29,7 +29,7 @@ public class UserController {
     public Collection<UserDto> getAllUsers() {
         log.info("UserController - получение всех пользователей");
 
-        return userService.getAllUsers();
+        return userService.getUsers();
     }
 
     // получить пользователя по ИД
@@ -37,7 +37,7 @@ public class UserController {
     public UserDto getUserById(@PathVariable("userId") Long userId) {
         log.info("UserController - получение пользователя по ИД: {}", userId);
 
-        return userService.getUserById(userId);
+        return userService.getUser(userId);
     }
 
     // обновить пользователя по ИД
@@ -53,6 +53,6 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public void deleteUserById(@PathVariable("userId") Long userId) {
         log.info("UserController - удаление пользователя по ИД: {}", userId);
-        userService.deleteUserById(userId);
+        userService.deleteUser(userId);
     }
 }
