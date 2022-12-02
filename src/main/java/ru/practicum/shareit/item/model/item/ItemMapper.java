@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemMapper {
+
     //из ItemDto в Item
     public static Item mapToItem(ItemDto itemDto, Long userId) {
         return new Item(
@@ -11,7 +12,8 @@ public class ItemMapper {
                 userId,
                 itemDto.getName(),
                 itemDto.getDescription(),
-                itemDto.getAvailable());
+                itemDto.getAvailable(),
+                null);
     }
 
     //из Item в ItemDto
@@ -21,9 +23,10 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
+                item.getRequest() != null ? item.getRequest().getId() : 0,
                 null,
                 null,
-                null);
+                new ArrayList<>());
     }
 
     //получение списка ItemDto из списка Item

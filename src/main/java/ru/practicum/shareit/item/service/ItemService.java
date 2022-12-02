@@ -11,7 +11,7 @@ public interface ItemService {
     ItemDto addItem(Long userId, ItemDto itemDto);
 
     // получить все вещи пользователя по ИД пользователя
-    Collection<ItemDto> getItems(Long userId);
+    Collection<ItemDto> getItems(Long userId, int from, int size);
 
     // получить вещь по ИД и пользователю
     ItemDto getItemByItemIdAndUserId(Long itemId, Long userId);
@@ -23,7 +23,7 @@ public interface ItemService {
     void deleteItem(Long itemId);
 
     // поиск вещей через совпадения текста запроса с наименованием или описанием вещи
-    Collection<ItemDto> searchItems(String text);
+    Collection<ItemDto> searchItems(String text, int from, int size);
 
     // добавление комментария к завершённой аренде
     CommentDto addComment(Long userId, Long itemId, CommentDto commentDto);

@@ -15,7 +15,7 @@ public class BookingDto {
     @Future(message = "Дата начала бронирования не может быть раньше текущей даты")
     private LocalDateTime start; // дата начала аренды
     @Future(message = "Дата окончания бронирования не может быть раньше текущей даты")
-    private LocalDateTime  end; // дата окончания аренды
+    private LocalDateTime end; // дата окончания аренды
     @NotNull
     private Long itemId; // ид арендуемой вещи
     private Item item; // арендуемая вещь
@@ -23,13 +23,19 @@ public class BookingDto {
     private Status status; // статус подтверждения аренды
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Item {
-        private final Long id;
-        private final String name;
+        private Long id;
+        private String name;
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class User {
-        private final Long id;
+        private Long id;
     }
 }

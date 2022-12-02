@@ -9,8 +9,7 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    @NotNull
-    private long id;
+    private Long id;
 
     @NotBlank(message = "Имя пользователя не может быть пустым")
     @Size(max = 30, message = "Максимальная длина имени пользователя — 30 символов")

@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.model.Booking;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,7 +30,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     /**
      * Для сервиса аренды, поиск по арендатору вещи
      */
-    Collection<Booking> findAllByBooker_IdOrderByStartDesc(Long userId);
+
+    Collection<Booking> findAllByBooker_IdOrderByStartDesc
+            (Long userId, PageRequest pageRequest);
 
     @Query(value = "" +
             "SELECT * FROM bookings AS b " +
@@ -37,18 +40,23 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "WHERE b.booker_id= ?1 " +
             "AND (?2 between start_date and end_date)"
             , nativeQuery = true)
-    Collection<Booking> findAllByBooker_IdAndStatusCurrentOrderByStartDesc(Long userId, LocalDateTime now);
+    Collection<Booking> findAllByBooker_IdAndStatusCurrentOrderByStartDesc
+            (Long userId, LocalDateTime now, PageRequest pageRequest);
 
-    Collection<Booking> findAllByBooker_IdAndStartIsAfterOrderByStartDesc(Long userId, LocalDateTime now);
+    Collection<Booking> findAllByBooker_IdAndStartIsAfterOrderByStartDesc
+            (Long userId, LocalDateTime now, PageRequest pageRequest);
 
-    Collection<Booking> findAllByBooker_IdAndEndIsBeforeOrderByStartDesc(Long userId, LocalDateTime now);
+    Collection<Booking> findAllByBooker_IdAndEndIsBeforeOrderByStartDesc
+            (Long userId, LocalDateTime now, PageRequest pageRequest);
 
-    Collection<Booking> findAllByBooker_IdAndStatusOrderByStartDesc(Long userId, Status status);
+    Collection<Booking> findAllByBooker_IdAndStatusOrderByStartDesc
+            (Long userId, Status status, PageRequest pageRequest);
 
     /**
      * Для сервиса аренды, поиск по собственнику вещи
      */
-    Collection<Booking> findAllByItem_OwnerOrderByStartDesc(Long ownerId);
+    Collection<Booking> findAllByItem_OwnerOrderByStartDesc
+            (Long ownerId, PageRequest pageRequest);
 
     @Query(value = "" +
             "SELECT * FROM bookings AS b " +
@@ -56,11 +64,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "WHERE i.owner_id= ?1 " +
             "AND (?2 between start_date and end_date)"
             , nativeQuery = true)
-    Collection<Booking> findAllByItem_OwnerAndStatusCurrentOrderByStartDesc(Long ownerId, LocalDateTime now);
+    Collection<Booking> findAllByItem_OwnerAndStatusCurrentOrderByStartDesc
+            (Long ownerId, LocalDateTime now, PageRequest pageRequest);
 
-    Collection<Booking> findAllByItem_OwnerAndStartIsAfterOrderByStartDesc(Long ownerId, LocalDateTime now);
+    Collection<Booking> findAllByItem_OwnerAndStartIsAfterOrderByStartDesc
+            (Long ownerId, LocalDateTime now, PageRequest pageRequest);
 
-    Collection<Booking> findAllByItem_OwnerAndEndIsBeforeOrderByStartDesc(Long ownerId, LocalDateTime now);
+    Collection<Booking> findAllByItem_OwnerAndEndIsBeforeOrderByStartDesc
+            (Long ownerId, LocalDateTime now, PageRequest pageRequest);
 
-    Collection<Booking> findAllByItem_OwnerAndStatusOrderByStartDesc(Long ownerId, Status status);
+    Collection<Booking> findAllByItem_OwnerAndStatusOrderByStartDesc
+            (Long ownerId, Status status, PageRequest pageRequest);
 }

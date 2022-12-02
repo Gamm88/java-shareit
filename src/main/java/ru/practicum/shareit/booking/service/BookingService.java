@@ -16,10 +16,10 @@ public interface BookingService {
     BookingDto findByBookingIdAndUserId(Long bookingId, Long userId);
 
     // получение списка бронирований для пользователя, по статусу
-    Collection<BookingDto> findBookingsByUserIdAndState(Long userId, String state);
+    Collection<BookingDto> findBookingsByUserIdAndState(Long userId, String state, int from, int size);
 
     // получение списка бронирований владельца вещи, по статусу
-    Collection<BookingDto> findBookingsByOwnerIdAndState(Long ownerId, String state);
+    Collection<BookingDto> findBookingsByOwnerIdAndState(Long ownerId, String state, int from, int size);
 
     // получение аренды, если не найдена - ошибка 404
     Booking getBookingOrNotFound(Long bookingId);

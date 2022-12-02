@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.servise;
+package ru.practicum.shareit.user.service;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
