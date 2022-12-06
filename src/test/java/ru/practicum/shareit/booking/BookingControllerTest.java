@@ -1,26 +1,24 @@
 package ru.practicum.shareit.booking;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import ru.practicum.shareit.booking.model.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import ru.practicum.shareit.booking.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.booking.model.*;
-import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.booking.service.BookingServiceImpl;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(controllers = BookingController.class)
 class BookingControllerTest {
@@ -31,83 +29,21 @@ class BookingControllerTest {
     private ObjectMapper mapper;
 
     @MockBean
-    private BookingServiceImpl bookingService;
+    private BookingService bookingService;
 
     private static final String USER_REQUEST_HEADER = "X-Sharer-User-id";
 
-    private BookingDto bookingDto = new BookingDto(
+    private final BookingDto bookingDto = new BookingDto(
             1L,
-            LocalDateTime.of(2022, 12, 11, 00, 00),
-            LocalDateTime.of(2022, 12, 15, 00, 00),
-            1L,
-            new BookingDto.Item(1L, "Дрель"),
-            new BookingDto.User(2L),
-            Status.APPROVED);
-
-    @Test
-    void addNewBooking() throws Exception {
-        when(bookingService.addBooking(anyLong(), any(BookingDto.class)))
-                .thenReturn(bookingDto);
-
-        mockMvc.perform(post("/bookings")
-                        .header(USER_REQUEST_HEADER, 1L)
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1L), Long.class))
-                .andExpect(jsonPath("$.itemId", is(1L), Long.class))
-                .andExpect(jsonPath("$.item.id", is(1L), Long.class))
-                .andExpect(jsonPath("$.item.name", is("Дрель")))
-                .andExpect(jsonPath("$.booker.id", is(2L), Long.class))
-                .andExpect(jsonPath("$.status", is("APPROVED")));
-
-        verify(bookingService, times(1)).addBooking(anyLong(), any(BookingDto.class));
-    }
-}
-
-    /*
-
-
-@WebMvcTest(controllers = BookingController.class)
-public class BookingControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper mapper;
-
-    @MockBean
-    private BookingServiceImpl bookingService;
-
-    private static final String USER_REQUEST_HEADER = "X-Sharer-User-id";
-
-    private BookingDto bookingDto = new BookingDto(
-            1L,
-            LocalDateTime.of(2022, 11, 11, 00, 00),
-            LocalDateTime.of(2022, 11, 15, 00, 00),
-            1L,
-            new BookingDto.Item(1L, "Дрель"),
-            new BookingDto.User(2L),
-            Status.APPROVED);
-
-    /*
-    private BookingDto bookingDto = new BookingDto(
-            1L,
-            LocalDateTime.of(2022, 11, 11, 00, 00),
-            LocalDateTime.of(2022, 11, 15, 00, 00),
+            LocalDateTime.of(2022, 12, 11, 0, 0),
+            LocalDateTime.of(2022, 12, 15, 0, 0),
             1L,
             new BookingDto.Item(1L, "Дрель"),
             new BookingDto.User(2L),
             Status.WAITING);
 
-    private final CommentDto commentDto = new CommentDto(
-            1L, "Дрель грязная!", "Василий", LocalDateTime.of(2022, 12, 12, 15, 00));
-
-
-
     @Test
-    void addNewBooking() throws Exception {
+    void testAddBooking() throws Exception {
         when(bookingService.addBooking(anyLong(), any(BookingDto.class)))
                 .thenReturn(bookingDto);
 
@@ -117,154 +53,105 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1L), Long.class))
-                .andExpect(jsonPath("$.itemId", is(1L), Long.class))
-                .andExpect(jsonPath("$.item.id", is(1L), Long.class))
-                .andExpect(jsonPath("$.item.name", is("testName")))
-                .andExpect(jsonPath("$.booker.id", is(1L), Long.class))
-                .andExpect(jsonPath("$.status", is("APPROVED")));
+                .andExpect(jsonPath("$.id", is(bookingDto.getId()), Long.class))
+                .andExpect(jsonPath("$.start", is(bookingDto.getStart().format(DateTimeFormatter.ISO_DATE_TIME))))
+                .andExpect(jsonPath("$.end", is(bookingDto.getEnd().format(DateTimeFormatter.ISO_DATE_TIME))))
+                .andExpect(jsonPath("$.item.id", is(bookingDto.getItem().getId()), Long.class))
+                .andExpect(jsonPath("$.item.name", is(bookingDto.getItem().getName())))
+                .andExpect(jsonPath("$.booker.id", is(bookingDto.getBooker().getId()), Long.class))
+                .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString())));
 
         verify(bookingService, times(1)).addBooking(anyLong(), any(BookingDto.class));
     }
 
-    /*
     @Test
-    void testGetBookings() throws Exception {
-        BookingDto newBookingDto = new BookingDto(
-                1L, "Отвертка", "Аккумуляторная отвертка", true, null, null, null,
-                new ArrayList<>());
+    void testSetApprove() throws Exception {
+        bookingDto.setStatus(Status.APPROVED);
 
-        when(bookingService.getBookings(1L, 0, 10))
-                .thenReturn(List.of(bookingDto, newBookingDto));
+        when(bookingService.setApprove(1L, 2L, true))
+                .thenReturn(bookingDto);
 
-        mockMvc.perform(get("/bookings/")
+        mockMvc.perform(patch("/bookings/1?approved=true")
+                        .header(USER_REQUEST_HEADER, 2L)
                         .content(mapper.writeValueAsString(bookingDto))
-                        .header(USER_REQUEST_HEADER, 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id", is(bookingDto.getId()), Long.class))
-                .andExpect(jsonPath("$[0].name", is(bookingDto.getName())))
-                .andExpect(jsonPath("$[0].description", is(bookingDto.getDescription())))
-                .andExpect(jsonPath("$[0].available", is(bookingDto.getAvailable())))
-                .andExpect(jsonPath("$[1].id", is(newBookingDto.getId()), Long.class))
-                .andExpect(jsonPath("$[1].name", is(newBookingDto.getName())))
-                .andExpect(jsonPath("$[1].description", is(newBookingDto.getDescription())))
-                .andExpect(jsonPath("$[1].available", is(newBookingDto.getAvailable())));
+                .andExpect(jsonPath("$.id", is(bookingDto.getId()), Long.class))
+                .andExpect(jsonPath("$.start", is(bookingDto.getStart().format(DateTimeFormatter.ISO_DATE_TIME))))
+                .andExpect(jsonPath("$.end", is(bookingDto.getEnd().format(DateTimeFormatter.ISO_DATE_TIME))))
+                .andExpect(jsonPath("$.item.id", is(bookingDto.getItem().getId()), Long.class))
+                .andExpect(jsonPath("$.item.name", is(bookingDto.getItem().getName())))
+                .andExpect(jsonPath("$.booker.id", is(bookingDto.getBooker().getId()), Long.class))
+                .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString())));
 
-        verify(bookingService, Mockito.times(1)).getBookings(1L, 0, 10);
+        verify(bookingService, times(1)).setApprove(anyLong(), anyLong(), anyBoolean());
     }
 
     @Test
-    void testGetBookingByBookingIdAndUserId() throws Exception {
-        when(bookingService.getBookingByBookingIdAndUserId(anyLong(), anyLong()))
+    void testFindByBookingIdAndUserId() throws Exception {
+        when(bookingService.findByBookingIdAndUserId(1L, 1L))
                 .thenReturn(bookingDto);
 
         mockMvc.perform(get("/bookings/1")
-                        .content(mapper.writeValueAsString(bookingDto))
                         .header(USER_REQUEST_HEADER, 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(mapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1L), Long.class))
-                .andExpect(jsonPath("$.name", is("Дрель")))
-                .andExpect(jsonPath("$.description", is("Простая дрель")))
-                .andExpect(jsonPath("$.available", is(true)));
+                .andExpect(jsonPath("$.id", is(bookingDto.getId()), Long.class))
+                .andExpect(jsonPath("$.start", is(bookingDto.getStart().format(DateTimeFormatter.ISO_DATE_TIME))))
+                .andExpect(jsonPath("$.end", is(bookingDto.getEnd().format(DateTimeFormatter.ISO_DATE_TIME))))
+                .andExpect(jsonPath("$.item.id", is(bookingDto.getItem().getId()), Long.class))
+                .andExpect(jsonPath("$.item.name", is(bookingDto.getItem().getName())))
+                .andExpect(jsonPath("$.booker.id", is(bookingDto.getBooker().getId()), Long.class))
+                .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString())));
 
-        Mockito.verify(bookingService, Mockito.times(1)).getBookingByBookingIdAndUserId(anyLong(), anyLong());
+        verify(bookingService, times(1)).findByBookingIdAndUserId(anyLong(), anyLong());
     }
 
-    @Test
-    void testUpdateBooking() throws Exception {
-        bookingDto.setName("Новая отвертка");
-        bookingDto.setDescription("Новая простая дрель");
-        when(bookingService.updateBooking(1L, 1L, bookingDto))
-                .thenReturn(bookingDto);
-
-        mockMvc.perform(patch("/bookings/{bookingId}", 1)
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .header(USER_REQUEST_HEADER, 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1L), Long.class))
-                .andExpect(jsonPath("$.name", is("Новая отвертка")))
-                .andExpect(jsonPath("$.description", is("Новая простая дрель")))
-                .andExpect(jsonPath("$.available", is(true)));
-
-        Mockito.verify(bookingService, Mockito.times(1)).updateBooking(1L, 1L, bookingDto);
-    }
 
     @Test
-    void testDeleteBooking() throws Exception {
-        mockMvc.perform(delete("/bookings/{bookingId}", 1)
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .header(USER_REQUEST_HEADER, 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
-
-        Mockito.verify(bookingService, Mockito.times(1)).deleteBooking(anyLong());
-    }
-
-    @Test
-    void getBookingsBySearch() throws Exception {
-        when(bookingService.searchBookings("Дрель", 0, 10))
+    void getAll() throws Exception {
+        when(bookingService.findBookingsByUserIdAndState(1L, "ALL", 0, 10))
                 .thenReturn(List.of(bookingDto));
 
-        mockMvc.perform(get("/bookings/search?text=Дрель")
-                        .content(mapper.writeValueAsString(bookingDto))
+        mockMvc.perform(get("/bookings/")
                         .header(USER_REQUEST_HEADER, 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(mapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(bookingDto.getId()), Long.class))
-                .andExpect(jsonPath("$[0].name", is(bookingDto.getName())))
-                .andExpect(jsonPath("$[0].description", is(bookingDto.getDescription())))
-                .andExpect(jsonPath("$[0].available", is(bookingDto.getAvailable())));
+                .andExpect(jsonPath("$[0].start", is(bookingDto.getStart().format(DateTimeFormatter.ISO_DATE_TIME))))
+                .andExpect(jsonPath("$[0].end", is(bookingDto.getEnd().format(DateTimeFormatter.ISO_DATE_TIME))))
+                .andExpect(jsonPath("$[0].item.id", is(bookingDto.getItem().getId()), Long.class))
+                .andExpect(jsonPath("$[0].item.name", is(bookingDto.getItem().getName())))
+                .andExpect(jsonPath("$[0].booker.id", is(bookingDto.getBooker().getId()), Long.class))
+                .andExpect(jsonPath("$[0].status", is(bookingDto.getStatus().toString())));
 
-        verify(bookingService, Mockito.times(1)).searchBookings("Дрель", 0, 10);
+        verify(bookingService, times(1)).findBookingsByUserIdAndState(anyLong(), anyString(), anyInt(), anyInt());
     }
 
     @Test
-    void testAddComment() throws Exception {
-        when(bookingService.addComment(1L, 1L, commentDto))
-                .thenReturn(commentDto);
+    void testFindBookingsByOwnerIdAndState() throws Exception {
+        when(bookingService.findBookingsByOwnerIdAndState(1L, "ALL", 0, 10))
+                .thenReturn(List.of(bookingDto));
 
-        mockMvc.perform(post("/bookings/1/comment")
-                        .content(mapper.writeValueAsString(commentDto))
+        mockMvc.perform(get("/bookings/owner")
                         .header(USER_REQUEST_HEADER, 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(commentDto.getId()), Long.class))
-                .andExpect(jsonPath("$.text", is(commentDto.getText())))
-                .andExpect(jsonPath("$.authorName", is(commentDto.getAuthorName())))
-                .andExpect(jsonPath("$.created", is("2022-12-12T15:00:00")));
-    }
-
-    @Test
-    void testGetBookingWithNotFoundException() throws Exception {
-        when(bookingService.getBookingByBookingIdAndUserId(anyLong(), anyLong()))
-                .thenThrow(new NotFoundException("Такого вещи не существует"));
-
-        mockMvc.perform(get("/Bookings/99")
                         .content(mapper.writeValueAsString(bookingDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(404));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", is(bookingDto.getId()), Long.class))
+                .andExpect(jsonPath("$[0].start", is(bookingDto.getStart().format(DateTimeFormatter.ISO_DATE_TIME))))
+                .andExpect(jsonPath("$[0].end", is(bookingDto.getEnd().format(DateTimeFormatter.ISO_DATE_TIME))))
+                .andExpect(jsonPath("$[0].item.id", is(bookingDto.getItem().getId()), Long.class))
+                .andExpect(jsonPath("$[0].item.name", is(bookingDto.getItem().getName())))
+                .andExpect(jsonPath("$[0].booker.id", is(bookingDto.getBooker().getId()), Long.class))
+                .andExpect(jsonPath("$[0].status", is(bookingDto.getStatus().toString())));
+
+        verify(bookingService, times(1)).findBookingsByOwnerIdAndState(anyLong(), anyString(), anyInt(), anyInt());
     }
 }
-     */

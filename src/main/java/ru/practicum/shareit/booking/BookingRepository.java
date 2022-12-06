@@ -19,8 +19,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     /**
      * Для сервиса вещей
      */
-    Collection<Booking> findByItem_IdAndItem_Owner(Long itemId, Long userId);
-
     Optional<Booking> findTop1BookingByItem_IdAndEndIsAfterAndStatusIsOrderByEndAsc(
             Long itemId, LocalDateTime end, Status status);
 
@@ -30,7 +28,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     /**
      * Для сервиса аренды, поиск по арендатору вещи
      */
-
     Collection<Booking> findAllByBooker_IdOrderByStartDesc
             (Long userId, PageRequest pageRequest);
 

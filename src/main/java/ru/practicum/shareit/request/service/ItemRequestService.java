@@ -1,6 +1,6 @@
 package ru.practicum.shareit.request.service;
 
-import org.springframework.data.domain.Pageable;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.model.ItemRequestDto;
 
 import java.util.List;
@@ -13,8 +13,11 @@ public interface ItemRequestService {
     List<ItemRequestDto> getItemRequestsByUser(Long userId);
 
     // получить список запросов, созданных другими пользователями, результат должен возвращаться постранично
-    List<ItemRequestDto> findAllByRequestor_IdIsNot(Long userId, int from, int size);
+    List<ItemRequestDto> getRequestsOtherUsers(Long userId, int from, int size);
 
     // получить данные об одном конкретном запросе
     ItemRequestDto getItemRequestByUser(Long userId, Long requestId);
+
+    // получение запроса вещи, если не найден - ошибка 404
+    ItemRequest getItemRequestOrNotFound(Long ItemRequestId);
 }

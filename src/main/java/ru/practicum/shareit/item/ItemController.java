@@ -4,13 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.model.item.ItemDto;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.model.comment.CommentDto;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Collection;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
 @Validated
@@ -18,7 +19,7 @@ import javax.validation.constraints.Min;
 @RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
-    private final ItemServiceImpl itemService;
+    private final ItemService itemService;
 
     // создать вещь
     @PostMapping
@@ -32,8 +33,8 @@ public class ItemController {
     // получение всех вещей пользователя по его ИД
     @GetMapping
     public Collection<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                        @RequestParam(defaultValue = "0")  @Min(0) int from,
-                                        @RequestParam(defaultValue = "10") @Min(1) int size) {
+                                        @RequestParam(defaultValue = "0")  @PositiveOrZero() int from,
+                                        @RequestParam(defaultValue = "10") @Positive() int size) {
         log.info("ItemController - получение всех вещей пользователя с ИД: {}", userId);
 
         return itemService.getItems(userId, from, size);
@@ -68,8 +69,8 @@ public class ItemController {
     // поиск вещей через совпадения текста запроса с наименованием или описанием вещи
     @GetMapping("/search")
     public Collection<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                           @RequestParam(defaultValue = "0")  @Min(0) int from,
-                                           @RequestParam(defaultValue = "10") @Min(1) int size,
+                                           @RequestParam(defaultValue = "0")  @PositiveOrZero() int from,
+                                           @RequestParam(defaultValue = "10") @Positive() int size,
                                            @RequestParam String text) {
         log.info("ItemController - пользователь с ИД: {} , запросил поиск: [{}]", userId, text);
 

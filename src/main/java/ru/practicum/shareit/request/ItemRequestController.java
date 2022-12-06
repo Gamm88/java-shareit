@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.request.model.*;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
+import ru.practicum.shareit.request.service.ItemRequestService;
 
 import java.util.List;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
 @Validated
@@ -20,7 +21,7 @@ import javax.validation.constraints.Min;
 @RequiredArgsConstructor
 @RequestMapping("/requests")
 public class ItemRequestController {
-    private final ItemRequestServiceImpl itemRequestService;
+    private final ItemRequestService itemRequestService;
 
     // добавить новый запрос вещи
     @PostMapping
@@ -43,11 +44,11 @@ public class ItemRequestController {
     // from — индекс первого элемента, начиная с 0, и size — количество элементов для отображения
     @GetMapping("/all")
     public List<ItemRequestDto> getRequestsOtherUsers(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                      @RequestParam(defaultValue = "0")  @Min(0) int from,
-                                                      @RequestParam(defaultValue = "10") @Min(1) int size) {
+                                                      @RequestParam(defaultValue = "0")  @PositiveOrZero() int from,
+                                                      @RequestParam(defaultValue = "10") @Positive() int size) {
         log.info("ItemRequestController - получение запросов, для пользователя с ИД: {}, from — {}, size — {}", userId, from, size);
 
-        return itemRequestService.findAllByRequestor_IdIsNot(userId, from, size);
+        return itemRequestService.getRequestsOtherUsers(userId, from, size);
     }
 
     // получить данные об одном конкретном запросе

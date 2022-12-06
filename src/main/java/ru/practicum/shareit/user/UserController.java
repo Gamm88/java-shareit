@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.user.model.UserDto;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.service.UserServiceImpl;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.util.Collection;
 import javax.validation.Valid;
@@ -14,7 +14,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     // создать пользователя
     @PostMapping

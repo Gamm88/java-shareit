@@ -51,7 +51,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     // получить список запросов, созданных другими пользователями, результат должен возвращаться постранично
     @Override
-    public List<ItemRequestDto> findAllByRequestor_IdIsNot(Long userId, int from, int size) {
+    public List<ItemRequestDto> getRequestsOtherUsers(Long userId, int from, int size) {
         userService.getUserOrNotFound(userId);
         PageRequest pageRequest = PageRequest.of(from / size, size);
 
@@ -79,6 +79,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     // получение запроса вещи, если не найден - ошибка 404
+    @Override
     public ItemRequest getItemRequestOrNotFound(Long ItemRequestId) {
         return itemRequestRepository
                 .findById(ItemRequestId)

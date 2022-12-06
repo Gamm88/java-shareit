@@ -16,9 +16,9 @@ import ru.practicum.shareit.item.model.item.ItemDto;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.model.item.ItemMapper;
-import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserServiceImpl;
+import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.*;
@@ -28,11 +28,11 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    private final ItemRequestServiceImpl itemRequestService;
+    private final ItemRequestService itemRequestService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final ItemRepository itemRepository;
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     // создать вещь
     @Override

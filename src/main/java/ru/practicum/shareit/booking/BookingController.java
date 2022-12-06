@@ -5,11 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.model.BookingDto;
 import org.springframework.validation.annotation.Validated;
-import ru.practicum.shareit.booking.service.BookingServiceImpl;
+import ru.practicum.shareit.booking.service.BookingService;
 
 import java.util.Collection;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
 @Validated
@@ -17,7 +18,7 @@ import javax.validation.constraints.Min;
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
 public class BookingController {
-    private final BookingServiceImpl bookingService;
+    private final BookingService bookingService;
 
     // создать бронирование
     @PostMapping
@@ -51,8 +52,8 @@ public class BookingController {
     // получение списка бронирований для пользователя, по статусу
     @GetMapping
     public Collection<BookingDto> findBookingsByUserIdAndState(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                               @RequestParam(defaultValue = "0")  @Min(0) int from,
-                                                               @RequestParam(defaultValue = "10") @Min(1) int size,
+                                                               @RequestParam(defaultValue = "0")  @PositiveOrZero() int from,
+                                                               @RequestParam(defaultValue = "10") @Positive() int size,
                                                                @RequestParam(required = false, defaultValue = "ALL")
                                                                String state) {
         log.info("Получен запрос на поиск брони по владельцу с ИД: " + userId + " и статусом: " + state);
@@ -63,8 +64,8 @@ public class BookingController {
     // получение списка бронирований владельца вещи, по статусу
     @GetMapping("/owner")
     public Collection<BookingDto> findBookingsByOwnerIdAndState(@RequestHeader("X-Sharer-User-Id") Long ownerId,
-                                                                @RequestParam(defaultValue = "0")  @Min(0) int from,
-                                                                @RequestParam(defaultValue = "10") @Min(1) int size,
+                                                                @RequestParam(defaultValue = "0")  @PositiveOrZero() int from,
+                                                                @RequestParam(defaultValue = "10") @Positive() int size,
                                                                 @RequestParam(required = false, defaultValue = "ALL")
                                                                 String state) {
         log.info("ItemController - поиск всех броней для пользователя с ИД: {} и статусом - {}", ownerId, state);
