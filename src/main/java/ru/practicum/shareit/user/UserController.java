@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.user.model.UserDto;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.servise.UserServiceImpl;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.util.Collection;
 import javax.validation.Valid;
@@ -14,11 +14,11 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     // создать пользователя
     @PostMapping
-    public UserDto createUser(@Valid @RequestBody UserDto userDto) {
+    public UserDto addUser(@Valid @RequestBody UserDto userDto) {
         log.info("UserController - создание пользователя: {}", userDto);
 
         return userService.addUser(userDto);
@@ -34,7 +34,7 @@ public class UserController {
 
     // получить пользователя по ИД
     @GetMapping("/{userId}")
-    public UserDto getUserById(@PathVariable("userId") Long userId) {
+    public UserDto getUser(@PathVariable("userId") Long userId) {
         log.info("UserController - получение пользователя по ИД: {}", userId);
 
         return userService.getUser(userId);
@@ -51,7 +51,7 @@ public class UserController {
 
     // удалить пользователя по ИД
     @DeleteMapping("/{userId}")
-    public void deleteUserById(@PathVariable("userId") Long userId) {
+    public void deleteUser(@PathVariable("userId") Long userId) {
         log.info("UserController - удаление пользователя по ИД: {}", userId);
         userService.deleteUser(userId);
     }

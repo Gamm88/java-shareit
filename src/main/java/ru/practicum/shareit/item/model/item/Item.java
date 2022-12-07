@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.model.item;
 
 import lombok.*;
+import ru.practicum.shareit.request.model.ItemRequest;
 
 import javax.persistence.*;
 
@@ -31,6 +32,10 @@ public class Item {
 
     @Column
     private Boolean available; // доступность вещи для аренды, проставлять владелец, по умолчанию true.
+
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
 
     @Override
     public boolean equals(Object o) {
