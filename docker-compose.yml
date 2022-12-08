@@ -5,7 +5,7 @@ services:
     image: gateway
     container_name: gateway_container
     ports:
-      - "9090:9090"
+      - "8080:8080"
     depends_on:
       - server
     environment:
@@ -16,7 +16,7 @@ services:
     image: server
     container_name: server_container
     ports:
-      - "8080:8080"
+      - "9090:9090"
     depends_on:
       - db
     environment:
