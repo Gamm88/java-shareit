@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Table(name = "comments")
 public class Comment {
     @Id

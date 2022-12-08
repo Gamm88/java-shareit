@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Table(name = "requests")
 public class ItemRequest {
     @Id

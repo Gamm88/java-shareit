@@ -124,7 +124,7 @@ public class ItemServiceImpl implements ItemService {
 
     // поиск вещей через совпадения текста запроса с наименованием или описанием вещи
     @Override
-    public List<ItemDto> searchItems(String text, int from, int size) {
+    public Collection<ItemDto> searchItems(String text, int from, int size) {
         List<ItemDto> itemsDtoList = new ArrayList<>();
         PageRequest pageRequest = PageRequest.of(from / size, size);
 

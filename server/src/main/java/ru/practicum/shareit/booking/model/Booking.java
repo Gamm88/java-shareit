@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Table(name = "bookings")
 public class Booking {
     @Id
