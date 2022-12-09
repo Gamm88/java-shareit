@@ -15,7 +15,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "AND i.available = true")
     List<Item> searchByText(String text, PageRequest pageRequest);
 
-    List<Item> findAllByOwner(Long userId, PageRequest pageRequest);
+    List<Item> findAllByOwnerOrderByIdAsc(Long userId, PageRequest pageRequest);
 
     List<Item> findAllByRequest_Id(Long itemRequestId);
 }

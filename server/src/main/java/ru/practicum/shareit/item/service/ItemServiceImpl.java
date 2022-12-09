@@ -55,7 +55,8 @@ public class ItemServiceImpl implements ItemService {
         userService.getUserOrNotFound(userId);
         PageRequest pageRequest = PageRequest.of(from / size, size);
 
-        Collection<ItemDto> itemsDtos = ItemMapper.mapToItemDto(itemRepository.findAllByOwner(userId, pageRequest));
+        Collection<ItemDto> itemsDtos = ItemMapper.mapToItemDto(
+                itemRepository.findAllByOwnerOrderByIdAsc(userId, pageRequest));
 
         for (ItemDto itemDto : itemsDtos) {
             addNextBooking(itemDto);

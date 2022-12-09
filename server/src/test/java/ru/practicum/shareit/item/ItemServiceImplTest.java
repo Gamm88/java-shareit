@@ -202,12 +202,12 @@ public class ItemServiceImplTest {
                 .when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         Mockito
-                .when(itemRepository.findAllByOwner(anyLong(), any()))
+                .when(itemRepository.findAllByOwnerOrderByIdAsc(anyLong(), any()))
                 .thenReturn(sourceList);
 
         List<ItemDto> targetList = (List<ItemDto>) itemService.getItems(user.getId(), 0, 10);
 
-        verify(itemRepository, times(1)).findAllByOwner(anyLong(), any());
+        verify(itemRepository, times(1)).findAllByOwnerOrderByIdAsc(anyLong(), any());
 
         assertThat(targetList, hasSize(1));
 
