@@ -45,12 +45,12 @@ CREATE TABLE IF NOT EXISTS bookings
 
 CREATE TABLE IF NOT EXISTS comments
 (
-    id          BIGINT GENERATED ALWAYS AS IDENTITY,
-    text        TEXT(512),
-    item_id     BIGINT,
-    author_id   BIGINT,
-    created     TIMESTAMP WITHOUT TIME ZONE,
-    CONSTRAINT  pk_comments     PRIMARY KEY (id),
-    CONSTRAINT  fk_comment_item FOREIGN KEY (item_id)   references items (id),
-    CONSTRAINT  fk_comment_user FOREIGN KEY (author_id) references users (id)
+    id           BIGINT GENERATED ALWAYS AS IDENTITY,
+    description  TEXT(512),
+    item_id      BIGINT,
+    author_id    BIGINT,
+    created      TIMESTAMP WITHOUT TIME ZONE,
+    CONSTRAINT   pk_comments     PRIMARY KEY (id),
+    CONSTRAINT   fk_comment_item FOREIGN KEY (item_id)   references items (id),
+    CONSTRAINT   fk_comment_user FOREIGN KEY (author_id) references users (id)
 );
