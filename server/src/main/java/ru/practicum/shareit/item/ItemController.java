@@ -9,9 +9,6 @@ import ru.practicum.shareit.item.model.comment.CommentDto;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Collection;
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
 @Validated
@@ -24,7 +21,7 @@ public class ItemController {
     // создать вещь
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                           @Valid @RequestBody ItemDto itemDto) {
+                           @RequestBody ItemDto itemDto) {
         log.info("ItemController - создание вещи: {}, от пользователя с ИД: {}", itemDto, userId);
 
         return itemService.addItem(userId, itemDto);
@@ -33,8 +30,8 @@ public class ItemController {
     // получение всех вещей пользователя по его ИД
     @GetMapping
     public Collection<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                        @RequestParam(defaultValue = "0")  @PositiveOrZero() int from,
-                                        @RequestParam(defaultValue = "10") @Positive() int size) {
+                                        @RequestParam(defaultValue = "0") int from,
+                                        @RequestParam(defaultValue = "10") int size) {
         log.info("ItemController - получение всех вещей пользователя с ИД: {}", userId);
 
         return itemService.getItems(userId, from, size);
@@ -69,8 +66,8 @@ public class ItemController {
     // поиск вещей через совпадения текста запроса с наименованием или описанием вещи
     @GetMapping("/search")
     public Collection<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                           @RequestParam(defaultValue = "0")  @PositiveOrZero() int from,
-                                           @RequestParam(defaultValue = "10") @Positive() int size,
+                                           @RequestParam(defaultValue = "0") int from,
+                                           @RequestParam(defaultValue = "10") int size,
                                            @RequestParam String text) {
         log.info("ItemController - пользователь с ИД: {} , запросил поиск: [{}]", userId, text);
 
@@ -81,7 +78,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
                                  @PathVariable Long itemId,
-                                 @Valid @RequestBody CommentDto commentDto) {
+                                 @RequestBody CommentDto commentDto) {
         log.info("ItemController - добавление комментария: {}, от пользователь с ИД: {}", commentDto, userId);
         return itemService.addComment(userId, itemId, commentDto);
     }

@@ -8,9 +8,6 @@ import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import java.util.Collection;
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
 @Validated
@@ -23,7 +20,7 @@ public class BookingController {
     // создать бронирование
     @PostMapping
     public BookingDto addBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                 @Valid @RequestBody BookingDto bookingDto) {
+                                 @RequestBody BookingDto bookingDto) {
         log.info("BookingController - создание бронирования: {}", bookingDto);
 
         return bookingService.addBooking(userId, bookingDto);
@@ -52,8 +49,8 @@ public class BookingController {
     // получение списка бронирований для пользователя, по статусу
     @GetMapping
     public Collection<BookingDto> findBookingsByUserIdAndState(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                               @RequestParam(defaultValue = "0")  @PositiveOrZero() int from,
-                                                               @RequestParam(defaultValue = "10") @Positive() int size,
+                                                               @RequestParam(defaultValue = "0") int from,
+                                                               @RequestParam(defaultValue = "10") int size,
                                                                @RequestParam(required = false, defaultValue = "ALL")
                                                                String state) {
         log.info("Получен запрос на поиск брони по владельцу с ИД: " + userId + " и статусом: " + state);
@@ -64,8 +61,8 @@ public class BookingController {
     // получение списка бронирований владельца вещи, по статусу
     @GetMapping("/owner")
     public Collection<BookingDto> findBookingsByOwnerIdAndState(@RequestHeader("X-Sharer-User-Id") Long ownerId,
-                                                                @RequestParam(defaultValue = "0")  @PositiveOrZero() int from,
-                                                                @RequestParam(defaultValue = "10") @Positive() int size,
+                                                                @RequestParam(defaultValue = "0") int from,
+                                                                @RequestParam(defaultValue = "10") int size,
                                                                 @RequestParam(required = false, defaultValue = "ALL")
                                                                 String state) {
         log.info("ItemController - поиск всех броней для пользователя с ИД: {} и статусом - {}", ownerId, state);

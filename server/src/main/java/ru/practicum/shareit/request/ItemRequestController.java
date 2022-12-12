@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
 import java.util.List;
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
 @Validated
@@ -26,7 +23,7 @@ public class ItemRequestController {
     // добавить новый запрос вещи
     @PostMapping
     public ItemRequestDto addItemRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                         @Valid @RequestBody ItemRequestDto itemRequestDto) {
+                                         @RequestBody ItemRequestDto itemRequestDto) {
         log.info("ItemRequestController - создание запроса вещи: {}, от пользователя с ИД: {}", itemRequestDto, userId);
 
         return itemRequestService.addItemRequest(userId, itemRequestDto);
@@ -44,8 +41,8 @@ public class ItemRequestController {
     // from — индекс первого элемента, начиная с 0, и size — количество элементов для отображения
     @GetMapping("/all")
     public List<ItemRequestDto> getRequestsOtherUsers(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                      @RequestParam(defaultValue = "0")  @PositiveOrZero() int from,
-                                                      @RequestParam(defaultValue = "10") @Positive() int size) {
+                                                      @RequestParam(defaultValue = "0") int from,
+                                                      @RequestParam(defaultValue = "10") int size) {
         log.info("ItemRequestController - получение запросов, для пользователя с ИД: {}, from — {}, size — {}", userId, from, size);
 
         return itemRequestService.getRequestsOtherUsers(userId, from, size);
